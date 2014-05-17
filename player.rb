@@ -69,8 +69,8 @@ class Player
     changes.each do |index| 
       cards_to_change == hand.cards[index]
     end
-    hand.return(cards_to_change)
-    hand.take(changes.count)
+    hand.return_cards(cards_to_change)
+    hand.cards << @deck.take(changes.count)
   end
   
   def ask_for_change
