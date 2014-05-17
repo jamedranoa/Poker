@@ -28,12 +28,12 @@ class Game
   end
   
   def place_bets
+    @raising=true
+    @current_bet = player.first_bet
+    @pot += @current_bet
+    while @raising
     @players_round.each_with_index do |player,i|
-      if i = 1
-        @current_bet = player.first_bet
-        @pot += @current_bet
-        next
-      end
+      next if i == 0
       player.make_bet
     end
   end
@@ -46,7 +46,7 @@ class Game
   
   def show_cards
     @players_round.each do |player|
-      puts players.cards
+      puts players.hand.to_s
     end
   end
   
@@ -66,6 +66,19 @@ class Game
     p "congrats"
   end
     
+  def delete_broke_players
+    @players.delete_if{ |player| player.broke?}
+  end
+  
+  def display_current_status
+    p "The pot is: #{@pot}"
+    p "The current bet is: #{@current_bet}"
+    puts
+  end
+  
+  def delete_me(player)
+    @players_round.delete(player)
+  end
 end
     
     
