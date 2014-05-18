@@ -1,35 +1,41 @@
 class Player
-  attr_accessor :hand
-  def initialize(name,bank,game)
+  def initialize(name,bank)
     @name = name
     @bank = bank
-    @game = game
-    @deck = game.deck
+  end
+  
+  attr_accessor :hand,:g,:name
+  
+  def set_game(g)
+    @g = g
   end
   
   def deal_from(deck)
-    player.hand = Hand.deal_from(deck)
+    self.hand = Hand.deal_from(deck)
   end
   
   def first_bet
     print hand
     p "what is your bet?"
-    @bankroll -= bet
-    translate_bet(get)
+    bet = translate_bet(gets)
+    @bank -= bet
+    bet
+   
   end
   
   def make_bet 
     g.display_current
     print hand
     p "Do you want to [f]old,[r]aise or [s]ee the curren bet"
-    decision = translate(get)
-    analze(decision)
+    decision = translate(gets)
+    analize(decision)
   end
   
   def analize(decision)
-    return make_fold if decision = "f"
-    return make_rise if  decision = "r"
-    g.pot += current_bet
+    return make_fold if decision == "f"
+    return make_rise if  decision == "r"
+    g.pot += g.current_bet
+    @bank -= g.current_bet
     g.raising = false
   end
   
@@ -38,11 +44,11 @@ class Player
     g.delete_me(self)
   end
   
-  def make_rise
+  def make_rise()
     begin
       g.raising = true
       p "What is your bet"
-      bet = translat_bet(get)
+      bet = translate_bet(gets)
       raise "That is less than the current bet" if bet < g.current_bet
     rescue  => e
       p e.message
@@ -64,13 +70,14 @@ class Player
   end
   
   def make_change
-    changes = ask_for_changes
+    changes = ask_for_change
     cards_to_change = []
     changes.each do |index| 
-      cards_to_change == hand.cards[index]
+      cards_to_change << hand.cards[index]
     end
-    hand.return_cards(cards_to_change)
-    hand.cards << @deck.take(changes.count)
+    hand.return_cards(g.deck,cards_to_change)
+    hand.cards -= cards_to_change
+    hand.cards += g.deck.take(changes.count)
   end
   
   def ask_for_change

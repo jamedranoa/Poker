@@ -48,7 +48,7 @@ class Hand
   
   def straight?
     possible_straight = @cards.map {|card| card_vals.index(card.value) }.sort
-    return true if possible_straight = [:ace,:two,:three]
+    return true if possible_straight == [:ace,:two,:three,:four,:five]
     possible_straight == (possible_straight[0]..possible_straight[-1]).to_a
   end
   
@@ -104,10 +104,10 @@ class Hand
   end
   
   def to_s
-    print "Hand: "
+   str ="Hand: "
     self.cards.each do |card|
-      print card.to_s
+      str << card.to_s
     end
-    puts
+    str
   end
 end
